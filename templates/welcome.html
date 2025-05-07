@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #fff0f5;
+      font-family: Arial, sans-serif;
+    }
+
+    .popup {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      animation: pop 2s ease-out forwards;
+      z-index: 10;
+    }
+
+    .popup-heart {
+      font-size: 80px;
+      color: red;
+      animation: beat 1s infinite;
+    }
+
+    .popup-text {
+      font-size: 36px;
+      color: #d00000;
+      margin-top: 10px;
+    }
+
+    @keyframes pop {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    @keyframes beat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    .balloon {
+      position: absolute;
+      font-size: 30px;
+      color: red;
+      animation: float 8s linear infinite;
+    }
+
+    @keyframes float {
+      0% {
+        bottom: -50px;
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        bottom: 110%;
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="popup">
+  <div class="popup-heart">❤️</div>
+  <div class="popup-text">I Love You So Much</div>
+</div>
+
+<script>
+  function createBalloon() {
+    const balloon = document.createElement('div');
+    balloon.className = 'balloon';
+    balloon.textContent = '🎈';
+    balloon.style.left = Math.random() * 100 + 'vw';
+    balloon.style.fontSize = 20 + Math.random() * 30 + 'px';
+    balloon.style.animationDuration = 5 + Math.random() * 5 + 's';
+    document.body.appendChild(balloon);
+
+    setTimeout(() => {
+      balloon.remove();
+    }, 10000);
+  }
+
+  setInterval(createBalloon, 300);
+</script>
+
+</body>
+</html>
