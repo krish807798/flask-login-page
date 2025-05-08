@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RGB Tic Tac Toe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background: #0f0f0f;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+        }
+
+        h1 {
+            margin: 20px;
+            text-shadow: 0 0 10px #0ff, 0 0 20px #f0f, 0 0 30px #0ff;
+        }
+
+        .controls {
+            margin: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        select, button {
+            background: black;
+            border: 2px solid #fff;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: 0.3s;
+            box-shadow: 0 0 10px #0ff;
+        }
+
+        select:hover, button:hover {
+            background: #111;
+            box-shadow: 0 0 15px #f0f, 0 0 30px #0ff;
+        }
+
+        .board {
+            display: grid;
+            gap: 5px;
+            margin-top: 20px;
+        }
+
+        .cell {
+            width: 60px;
+            height: 60px;
+            font-size: 2rem;
+            background: black;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #0ff;
+            box-shadow: 0 0 10px #0ff;
+            cursor: pointer;
+        }
+
+        .cell:hover {
+            background: #222;
+            box-shadow: 0 0 15px #f0f;
+        }
+
+        .status {
+            margin: 20px;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>RGB Tic Tac Toe</h1>
+
+    <div class="controls">
+        <select id="mode">
+            <option value="1">1 Player</option>
+            <option value="2">2 Player</option>
+        </select>
+
+        <select id="difficulty">
+            <option value="easy">Easy</option>
+            <option value="medium" selected>Medium</option>
+            <option value="hard">Hard</option>
+        </select>
+
+        <select id="size">
+            <option value="3">3 x 3</option>
+            <option value="5">5 x 5</option>
+            <option value="7">7 x 7</option>
+        </select>
+
+        <button onclick="startGame()">Start Game</button>
+    </div>
+
+    <div class="status" id="status">Select options and click Start Game</div>
+    <div class="board" id="board"></div>
+
+    <script>
+        let board = [];
+        let currentPlayer = "X";
+        let gameOver = false;
+        let mode = 1, size = 3, difficulty = "medium";
+
+        function startGame() {
+            mode = parseInt(document.getElementById("mode").value);
+            size = parseInt(document.getElementById("size").value);
+            difficulty = document.getElementById("difficulty").value;
+            board = Array(size * size).fill("");
+            currentPlayer = "X";
+            gameOver = false;
+            renderBoard();
+            updateStatus(`Player X's turn`);
+        }
+
+        function renderBoard() {
+            const boardEl = document.getElementById("board");
+            boardEl.style.gridTemplateColumns = `repeat(${size}, 60px)`;
+            boardEl.innerHTML = "";
+            board.forEach((cell, idx) => {
+                const div = document.createElement("div");
+                div.className = "cell";
+                div.textContent = cell;
+                div.onclick = () => cellClicked(idx);
+                boardEl.appendChild(div);
+            });
+        }
+
+        function updateStatus(message) {
+            document.getElementById("status").textContent = message;
+        }
+
+        function cellClicked(idx) {
+            if (board[idx] || gameOver) return;
+
+            board[idx] = currentPlayer;
+            renderBoard();
+
+            if (checkWin(currentPlayer)) {
+                updateStatus(`Player ${currentPlayer} wins!`);
+                gameOver = true;
+                return;
+            }
+
+            if (!board.includes("")) {
+                updateStatus("It's a draw!");
+                gameOver = true;
+                return;
+            }
+
+            currentPlayer = currentPlayer === "X" ? "O" : "X";
+
+            if (mode === 1 && currentPlayer === "O") {
+                updateStatus("Computer's turn...");
+                setTimeout(computerMove, 500);
+            } else {
+                updateStatus(`Player ${currentPlayer}'s turn`);
+            }
+        }
+
+        function computerMove() {
+            let move;
+            if (difficulty === "easy") {
+                move = randomMove();
+            } else if (difficulty === "medium") {
+                move = smartMove();
+            } else {
+                move = minimaxMove();
+            }
+
+            if (move !== null) cellClicked(move);
+        }
+
+        function randomMove() {
+            const empty = board.map((v, i) => v === "" ? i : null).filter(v => v !== null);
+            return empty[Math.floor(Math.random() * empty.length)];
+        }
+
+        function smartMove() {
+            return randomMove(); // For now, same as easy. You can improve it.
+        }
+
+        function minimaxMove() {
+            return randomMove(); // Simplified. Full minimax would be complex.
+        }
+
+        function checkWin(player) {
+            const winLen = size;
+            const b = board;
+
+            // Horizontal, vertical and diagonals
+            for (let r = 0; r < size; r++) {
+                for (let c = 0; c < size; c++) {
+                    if (
+                        checkLine(r, c, 0, 1, player, winLen) || // Horizontal
+                        checkLine(r, c, 1, 0, player, winLen) || // Vertical
+                        checkLine(r, c, 1, 1, player, winLen) || // Diagonal \
+                        checkLine(r, c, 1, -1, player, winLen)   // Diagonal /
+                    ) return true;
+                }
+            }
+            return false;
+        }
+
+        function checkLine(r, c, dr, dc, player, length) {
+            for (let i = 0; i < length; i++) {
+                let nr = r + dr * i;
+                let nc = c + dc * i;
+                if (nr < 0 || nr >= size || nc < 0 || nc >= size || board[nr * size + nc] !== player) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Initialize default board
+        startGame();
+    </script>
+</body>
+</html>

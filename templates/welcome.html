@@ -1,94 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Welcome</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      overflow: hidden;
-      background: #fff0f5;
-      font-family: Arial, sans-serif;
+      padding: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(135deg, #ff0057, #0099ff, #00ff9d);
+      background-size: 600% 600%;
+      animation: rgbBackground 10s ease infinite;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .popup {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      animation: pop 2s ease-out forwards;
-      z-index: 10;
+    @keyframes rgbBackground {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
-    .popup-heart {
-      font-size: 80px;
-      color: red;
-      animation: beat 1s infinite;
-    }
-
-    .popup-text {
+    h1 {
+      margin-top: 40px;
       font-size: 36px;
-      color: #d00000;
-      margin-top: 10px;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
     }
 
-    @keyframes pop {
-      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    .app-grid {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 30px;
+      padding: 20px;
+      max-width: 1000px;
+      width: 90%;
     }
 
-    @keyframes beat {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.2); }
+    .app-card {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+      overflow: hidden;
+      text-align: center;
+      transition: transform 0.3s;
     }
 
-    .balloon {
-      position: absolute;
-      font-size: 30px;
-      color: red;
-      animation: float 8s linear infinite;
+    .app-card:hover {
+      transform: scale(1.05);
     }
 
-    @keyframes float {
-      0% {
-        bottom: -50px;
-        opacity: 0;
-      }
-      10% {
-        opacity: 1;
-      }
-      100% {
-        bottom: 110%;
-        opacity: 0;
-      }
+    .app-card img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+    }
+
+    .app-card a {
+      display: block;
+      padding: 12px;
+      text-decoration: none;
+      color: #00ffff;
+      font-size: 18px;
+      background: rgba(0, 0, 0, 0.6);
+    }
+
+    .logout {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background: linear-gradient(45deg, #ff0057, #0099ff, #00ff9d);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      animation: rgbButton 5s linear infinite;
+    }
+
+    @keyframes rgbButton {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
   </style>
 </head>
 <body>
+  <h1>Welcome, {{ session['username'] }}</h1>
 
-<div class="popup">
-  <div class="popup-heart">❤️</div>
-  <div class="popup-text">I Love You So Much</div>
-</div>
+  <div class="app-grid">
+    <div class="app-card">
+      <a href="{{ url_for('calculator') }}">
+        <img src="{{ url_for('static', filename='images/cal.jpg') }}" alt="Calculator" />
+        Calculator
+      </a>
+    </div>
 
-<script>
-  function createBalloon() {
-    const balloon = document.createElement('div');
-    balloon.className = 'balloon';
-    balloon.textContent = '🎈';
-    balloon.style.left = Math.random() * 100 + 'vw';
-    balloon.style.fontSize = 20 + Math.random() * 30 + 'px';
-    balloon.style.animationDuration = 5 + Math.random() * 5 + 's';
-    document.body.appendChild(balloon);
 
-    setTimeout(() => {
-      balloon.remove();
-    }, 10000);
-  }
+    <div class="app-card">
+      <a href="{{ url_for('flappybird') }}">
+        <img src="{{ url_for('static', filename='images/flap.jpg') }}" alt="Flappy Bird" />
+        Flappy Bird
+      </a>
+    </div>
 
-  setInterval(createBalloon, 300);
-</script>
+    <div class="app-card">
+      <a href="{{ url_for('tictaktoe') }}">
+        <img src="{{ url_for('static', filename='images/tic.jpg') }}" alt="Tic Tak Toe" />
+        Tic Tak Toe
+      </a>
+    </div>
 
+    <div class="app-card">
+      <a href="{{ url_for('notes_app') }}">
+        <img src="{{ url_for('static', filename='images/notes.jpg') }}" alt="Notes App" />
+        Notes
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <form action="{{ url_for('logout') }}" method="GET">
+    <button class="logout">Logout</button>
+  </form>
 </body>
 </html>

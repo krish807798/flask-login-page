@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Notes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+
+        .container {
+            width: 80%;
+            margin: 2em auto;
+            background-color: white;
+            padding: 2em;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .notes-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .note {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            margin: 10px 0;
+            padding: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .note:hover {
+            background-color: #e0e0e0;
+        }
+
+        .note-text {
+            flex-grow: 1;
+        }
+
+        .delete-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background-color: darkred;
+        }
+
+        .add-note-form {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .add-note-form input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .add-note-form button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .add-note-form button:hover {
+            background-color: #45a049;
+        }
+
+        .flash-message {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>My Notes</h1>
+    </header>
+
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-message">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" class="add-note-form" id="addNoteForm">
+            <input type="text" name="note" id="noteInput" placeholder="Type your note here..." required />
+            <button type="submit">Save Note</button>
+        </form>
+
+        <ul class="notes-list">
+            {% for note in notes %}
+                <li class="note">
+                    <span class="note-text">{{ note }}</span>
+                    <form action="{{ url_for('delete_note', index=loop.index0) }}" method="POST">
+                        <button type="submit" class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        // Add interactivity for flash messages and note actions
+        document.addEventListener('DOMContentLoaded', function () {
+            // Flash message auto-hide
+            const flashMessages = document.querySelectorAll('.flash-message');
+            if (flashMessages.length > 0) {
+                setTimeout(function() {
+                    flashMessages.forEach(function(flash) {
+                        flash.style.display = 'none';
+                    });
+                }, 3000);
+            }
+
+            // Prevent Enter key from submitting the form
+            const noteInput = document.getElementById('noteInput');
+            noteInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); // Prevent form submission on Enter key
+                }
+            });
+
+            // Handle Save Note action
+            const addNoteForm = document.getElementById('addNoteForm');
+            addNoteForm.addEventListener('submit', function(e) {
+                const note = noteInput.value.trim();
+                if (note) {
+                    return true; // Allow form submission
+                } else {
+                    e.preventDefault(); // Prevent form submission if no note is typed
+                    alert('Please enter a note before saving.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

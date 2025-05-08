@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='calci.css') }}" />
+</head>
+<body>
+  <main>
+    <div class="screen-area">
+      <div class="small-screen">78+4</div>
+      <div class="large-screen">82</div>
+    </div>
+    <div class="button-container">
+      <button class="calc-btn top-row" id="AC">AC</button>
+      <button class="calc-btn top-row" id="plus_minus">+/-</button>
+      <button class="calc-btn top-row" id="percent">%</button>
+      <button class="calc-btn opr-pnl" id="divide">÷</button>
+      <button class="calc-btn num-pnl" id="num_7">7</button>
+      <button class="calc-btn num-pnl" id="num_8">8</button>
+      <button class="calc-btn num-pnl" id="num_9">9</button>
+      <button class="calc-btn opr-pnl" id="multiply">X</button>
+      <button class="calc-btn num-pnl" id="num_4">4</button>
+      <button class="calc-btn num-pnl" id="num_5">5</button>
+      <button class="calc-btn num-pnl" id="num_6">6</button>
+      <button class="calc-btn opr-pnl" id="minus">-</button>
+      <button class="calc-btn num-pnl" id="num_1">1</button>
+      <button class="calc-btn num-pnl" id="num_2">2</button>
+      <button class="calc-btn num-pnl" id="num_3">3</button>
+      <button class="calc-btn opr-pnl" id="plus">+</button>
+      <button class="calc-btn num-pnl" id="clear">clear</button>
+      <button class="calc-btn num-pnl" id="num_0">0</button>
+      <button class="calc-btn num-pnl" id="dot">.</button>
+      <button class="calc-btn opr-pnl" id="equal">=</button>
+    </div>
+  </main>
+  <script src="{{ url_for('static', filename='calci.js') }}"></script>
+</body>
+</html>
